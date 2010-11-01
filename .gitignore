@@ -1,0 +1,15 @@
+*.tmproj
+tmp
+target
+log
+.log
+.project
+*#*
+bin
+dist
+.classpath
+build
+*~
+.settings
+TODO
+.svn
