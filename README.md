@@ -15,14 +15,14 @@ If your script has dump or store statement, you have to wait for a long time unt
 Actually pig client has not so much thing to be involved in the execution of pig script. You can do other thing on client when you run Pig script on hadoop cluster. 
 To improve the efficiency, RAF-PIG provides an asynchronous way to run pig script. The following is an simple example:
 
-<code>
+<code><pre>
 	a = load '$input' as (f1:chararray,f2:int,f3:int);
 	b = foreach a generate f1,f2;
 	c = group b by f1;
 	d = foreach c generate group,SUM(b.f2);
 	store d into '$output';
-</code>
-<code>
+</pre></code>
+<code><pre>
 	PigConfiguration conf = new PigConfiguration();
 	PigSession session = new PigSession(conf);
 	try {
@@ -57,7 +57,7 @@ To improve the efficiency, RAF-PIG provides an asynchronous way to run pig scrip
 	} finally {
 	    session.close();
 	}
-</code>
+</pre></code>
 
 Here, we introduce 4 important classes for RAF-PIG. 
 
@@ -83,7 +83,7 @@ First I'd like to classify pig script as following two types:
 	1.	Having dump or store statement, this kind of script would generate mapreduce job before the calling of method PigJobListener.onSucess(PigJob job).
 	2.	Without dump or store statement, this kind of pig script won't generate mapreduce job until you call PigJob.getOutput(alias), most of time you should call PigJob.getOutput(alias) in PigJobListener.onSucess(PigJob job).
 
-Interface PigJob provide two kinds of way to get output. 
+Interface PigJob provides two kinds of way to get output. 
 	1.	Get output from the destination source, such as PigJob.getOutput(Path path, String loadFuncClass), this is often used for pig script with store statement.
 	2.	Get output from the alias, such as PigJob.getOutput(String alias), this is often used for pig script without store statement.
 
@@ -108,15 +108,15 @@ internal plain text representation of Tuple and DataBag, especially there's nest
 parse it for users outside pig world, especially when handling result using other
 programming languages. 
 e.g. You have a result as following <br/>
-<code>
+<code><pre>
   (John,(1,2,3))
   (Lucy,(2,3,4)}
-</code>
+</pre></code>
 You can use this class ResultFormat to convert it into the following format which you can handle it easily. <br/>
-<code>
+<code><pre>
   John,1,2,3
   Lucy,2,3,4
-</code>
+</pre></code>
 You can refer javadoc for more details.
 
 ## Commit Back! ##
