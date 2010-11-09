@@ -17,7 +17,7 @@ The original way to run pig script in embeded mode is create a PigServer, then c
 If your script has dump or store statement, you have to wait for a long time until the mapreduce job completes. Or you can call PigServer.openIterator() which is also blocking method.
 Actually pig client has not so much thing to be involved in the execution of pig script. You can do other thing on client when you run Pig script on hadoop cluster. 
 To improve the efficiency, RAF-PIG provides an asynchronous way to run pig script. The following is an simple example,<br/>
-Pig script:
+*Pig script*:
 <pre>
 	a = load '$input' as (f1:chararray,f2:int,f3:int);
 	b = foreach a generate f1,f2;
@@ -25,7 +25,7 @@ Pig script:
 	d = foreach c generate group,SUM(b.f2);
 	store d into '$output';
 </pre>
-Java code:
+*Java code*:
 <pre>
 	PigConfiguration conf = new PigConfiguration();
 	PigSession session = new PigSession(conf);
@@ -85,9 +85,9 @@ Interface PigJobListener has three methods beforeStart, onSuccess, onFailure. It
 ### Provide different ways to get the output of PigJob ###
 
 First I'd like to classify pig script as following two types 
-	* Having dump or store statement,this kind of script would generate mapreduce job before the calling of 
+	<li> Having dump or store statement,this kind of script would generate mapreduce job before the calling of 
 	method PigJobListener.onSucess(PigJob job).
-	* Without dump or store statement, this kind of pig script won't generate mapreduce job until you call 
+	<li> Without dump or store statement, this kind of pig script won't generate mapreduce job until you call 
 	PigJob.getOutput(alias), most of time you should call PigJob.getOutput(alias) in PigJobListener.onSucess(PigJob job).
 
 Interface PigJob provides two kinds of way to get output. 
