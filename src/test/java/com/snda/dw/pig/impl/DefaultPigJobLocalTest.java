@@ -72,9 +72,9 @@ public class DefaultPigJobLocalTest extends TestCase {
     public void testDefaultPigJob_1() throws IOException, InterruptedException {
         PigJob job = PigJobs.newPigJobFromClassPath("scripts/test_1.pig");
         job.setParameter("input", "src/test/resources/data/input/input_1.txt");
-        job.addListener(new PigJobListenerAdapter() {
+        job.setListener(new PigJobListenerAdapter() {
             @Override
-            public void onSucess(PigJob job) throws Exception {
+            public void onSuccess(PigJob job) throws Exception {
                 Map<String, Long> map = job.getOutput("c",
                         new MapResultExtractor_1());
                 assertTrue(map.size() == 2);
@@ -84,7 +84,6 @@ public class DefaultPigJobLocalTest extends TestCase {
         });
         PigJobFuture future = session.submitPigJob(job);
         future.await();
-        assertFalse(future.isCanceled());
         assertTrue(future.isDone());
         assertTrue(future.isSuccess());
     }
@@ -100,9 +99,9 @@ public class DefaultPigJobLocalTest extends TestCase {
 
         job.setParameter("input", "src/test/resources/data/input/input_1.txt")
                 .setParameter("output", outputPath);
-        job.addListener(new PigJobListenerAdapter() {
+        job.setListener(new PigJobListenerAdapter() {
             @Override
-            public void onSucess(PigJob job) throws Exception {
+            public void onSuccess(PigJob job) throws Exception {
                 Map<String, Long> map = job.getOutput(new Path(outputPath),
                         "PigStorage()", new MapResultExtractor_2());
                 assertTrue(map.size() == 2);
@@ -112,7 +111,6 @@ public class DefaultPigJobLocalTest extends TestCase {
         });
         PigJobFuture future = session.submitPigJob(job);
         future.await();
-        assertFalse(future.isCanceled());
         assertTrue(future.isDone());
         assertTrue(future.isSuccess());
         outputFile.deleteOnExit();
@@ -124,32 +122,9 @@ public class DefaultPigJobLocalTest extends TestCase {
                 .newPigJobFromClassPath("scripts/incorrect_script.pig");
         PigJobFuture future = session.submitPigJob(job);
         future.await();
-        assertFalse(future.isCanceled());
         assertTrue(future.isDone());
         assertFalse(future.isSuccess());
         assertEquals(FrontendException.class, future.getFailure().getClass());
     }
 
-    // test cancel job
-    public void testDefaultPigJob_4() throws IOException, InterruptedException {
-        PigJob job = PigJobs.newPigJobFromClassPath("scripts/test_1.pig");
-        job.setParameter("input", "src/test/resources/data/input/input_1.txt");
-        job.addListener(new PigJobListenerAdapter() {
-
-            @Override
-            public void onSucess(PigJob job) throws Exception {
-                Thread.currentThread().sleep(10 * 1000);
-                Map<String, Long> map = job.getOutput("c",
-                        new MapResultExtractor_1());
-                assertTrue(map.size() == 2);
-                assertTrue(map.get("a").equals(3L));
-                assertTrue(map.get("b").equals(5L));
-            }
-        });
-        PigJobFuture future = session.submitPigJob(job);
-        future.cancel();
-
-        assertFalse(future.isDone());
-        assertFalse(future.isSuccess());
-    }
 }

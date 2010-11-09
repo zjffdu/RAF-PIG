@@ -26,7 +26,7 @@ public class PigJobListenerAdapter implements PigJobListener {
     }
 
     @Override
-    public void onSucess(final PigJob job) throws Exception {
+    public void onSuccess(final PigJob job) throws Exception {
         LOGGER.info("Run successfully for pig script:\n" + job.getScript());
     }
 

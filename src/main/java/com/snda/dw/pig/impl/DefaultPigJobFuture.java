@@ -16,8 +16,6 @@ public class DefaultPigJobFuture implements PigJobFuture {
 
     private volatile boolean isSuccess = false;
 
-    private volatile boolean isCancaled = false;
-
     private Throwable cause;
 
     private PigWorker worker;
@@ -36,25 +34,10 @@ public class DefaultPigJobFuture implements PigJobFuture {
     }
 
     @Override
-    public void await(long milliSeconds) {
-
-    }
-
-    @Override
     public boolean isDone() {
         return this.isDone;
     }
 
-    @Override
-    public void cancel() {
-        if (isDone) {
-            return ;
-        }
-        synchronized (this) {
-            this.isCancaled = true;
-            worker.interrupt();
-        }
-    }
 
     @Override
     public void setDone() {
@@ -85,11 +68,6 @@ public class DefaultPigJobFuture implements PigJobFuture {
     public void setFailure(Throwable e) {
         this.isSuccess = false;
         this.cause = e;
-    }
-
-    @Override
-    public boolean isCanceled() {
-        return isCancaled;
     }
 
 }

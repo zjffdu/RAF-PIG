@@ -12,7 +12,7 @@ import com.google.common.base.Preconditions;
  * Utility class for type {@link Tuple}
  * 
  * @author <a href="http://zjffdu.blogspot.com/">Jeff Zhang</a>
- * @email zjffdu@gmail.com 
+ * @email zjffdu@gmail.com
  * 
  */
 public class Tuples {
@@ -33,15 +33,6 @@ public class Tuples {
     }
 
     /**
-     * 
-     * @param size
-     * @return
-     */
-    public static Tuple newTuple(int size) {
-        return TUPLE_FACTORY.newTuple(size);
-    }
-
-    /**
      * Create a tuple from arbitrary number of elements.
      * 
      * @param <E>
@@ -50,7 +41,7 @@ public class Tuples {
      * @throws IOException
      */
     public static <E> Tuple newTuple(E... elements) throws IOException {
-        Tuple tuple = newTuple(elements.length);
+        Tuple tuple = TUPLE_FACTORY.newTuple(elements.length);
         for (int i = 0; i < elements.length; ++i) {
             tuple.set(i, elements[i]);
         }

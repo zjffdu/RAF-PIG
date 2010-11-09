@@ -2,6 +2,7 @@ package com.snda.dw.pig;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.Thread.UncaughtExceptionHandler;
 import java.util.Iterator;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -29,10 +30,16 @@ public class PigSession {
 
     private ExecutorService executor;
 
-    public PigSession(PigConfiguration conf) throws IOException {
+    public PigSession(PigConfiguration conf) {
         this.conf = conf;
         pigServerPool = new PigServer2Factory(conf);
         executor = Executors.newFixedThreadPool(conf.getInt(Options.PoolSize));
+        Thread.setDefaultUncaughtExceptionHandler(new UncaughtExceptionHandler() {
+            @Override
+            public void uncaughtException(Thread t, Throwable e) {
+                PigSession.this.close();
+            }
+        });
     }
 
     public PigServer2Factory getPigServerPool() {
@@ -56,7 +63,7 @@ public class PigSession {
         PigJob job = PigJobs.newPigJobFromFile(new File("scripts/Test.pig"))
                 .setJobName("test").setPriority("normal")
                 .setParameter("input", "data/input.txt")
-                .addListener(new PigJobListenerAdapter() {
+                .setListener(new PigJobListenerAdapter() {
 
                     @Override
                     public void beforeStart(PigJob job) throws Exception {
@@ -64,7 +71,7 @@ public class PigSession {
                     }
 
                     @Override
-                    public void onSucess(PigJob job) throws Exception {
+                    public void onSuccess(PigJob job) throws Exception {
                         Iterator<Tuple> iter = job.getOutput(new Path(
                                 "data/output"), "PigStorage()");
                         while (iter.hasNext()) {

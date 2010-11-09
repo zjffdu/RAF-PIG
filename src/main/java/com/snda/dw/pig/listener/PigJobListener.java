@@ -29,7 +29,7 @@ public interface PigJobListener {
      * @param job
      * @throws Exception
      */
-    public void onSucess(final PigJob job) throws Exception;
+    public void onSuccess(final PigJob job) throws Exception;
 
     /**
      * Do stuff when exception happens.

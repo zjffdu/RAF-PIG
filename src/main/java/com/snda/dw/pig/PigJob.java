@@ -81,10 +81,10 @@ public interface PigJob {
      * @param listener
      * @return
      */
-    public PigJob addListener(PigJobListener listener);
+    public PigJob setListener(PigJobListener listener);
     
-    List<PigJobListener> getListeners();
-
+    PigJobListener getListener();
+    
     public Map<String, Object> getAttributes();
 
     void setPigServer(PigServer2 pigServer);
@@ -118,12 +118,37 @@ public interface PigJob {
      */
     Iterator<Tuple> getOutput(String alias) throws IOException;
 
+    /**
+     * 
+     * @param <E>
+     * @param path
+     * @param loadFuncClass
+     * @param mapper
+     * @return
+     * @throws IOException
+     */
     <E> List<E> getOutput(Path path, String loadFuncClass, RowMapper<E> mapper)
             throws IOException;
 
+    /**
+     * 
+     * @param <E>
+     * @param path
+     * @param loadFuncClass
+     * @param extractor
+     * @return
+     * @throws IOException
+     */
     <E> E getOutput(Path path, String loadFuncClass,
             ResultExtractor<E> extractor) throws IOException;
 
+    /**
+     * 
+     * @param path
+     * @param loadFuncClass
+     * @return
+     * @throws IOException
+     */
     Iterator<Tuple> getOutput(Path path, String loadFuncClass)
             throws IOException;
 

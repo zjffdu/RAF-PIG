@@ -23,7 +23,10 @@ public class PigServer2Factory {
     public PigServer2 getPigServer() throws IOException {
         PigServer2 pig = new PigServer2(conf.get(Options.ExecType));
         pig.getPigContext().initializeImportList(conf.get(Options.UDFPackage));
-        pig.registerJar(conf.get(Options.UDFJar));
+        String[] jars=conf.get(Options.UDFJar).split(":");
+        for (String jar:jars){
+            pig.registerJar(jar);
+        }
         return pig;
     }
 }

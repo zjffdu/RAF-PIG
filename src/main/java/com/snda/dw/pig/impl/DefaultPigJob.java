@@ -40,7 +40,7 @@ import com.snda.dw.pig.listener.PigJobListenerAdapter;
  * Default implementation of interface {@link PigJob}
  * 
  * @author <a href="http://zjffdu.blogspot.com/">Jeff Zhang</a>
- * @email zjffdu@gmail.com 
+ * @email zjffdu@gmail.com
  * 
  */
 public class DefaultPigJob implements PigJob {
@@ -60,10 +60,10 @@ public class DefaultPigJob implements PigJob {
     private Map<String, String> parameters = new HashMap<String, String>();
 
     // the default listener is doing nothing
-    private List<PigJobListener> jobListeners = new ArrayList<PigJobListener>();
+    private PigJobListener jobListener = new PigJobListenerAdapter();
 
     // just for extension
-    private Map<String, Object> attibutes = new HashMap<String, Object>();
+    private Map<String, Object> attributes = new HashMap<String, Object>();
 
     private PigServer2 pigServer;
 
@@ -94,19 +94,19 @@ public class DefaultPigJob implements PigJob {
     }
 
     @Override
-    public PigJob addListener(PigJobListener listener) {
-        this.jobListeners.add(listener);
+    public PigJob setListener(PigJobListener listener) {
+        this.jobListener = listener;
         return this;
     }
 
     @Override
-    public List<PigJobListener> getListeners() {
-        return this.jobListeners;
+    public PigJobListener getListener() {
+        return this.jobListener;
     }
 
     @Override
     public Map<String, Object> getAttributes() {
-        return this.attibutes;
+        return this.attributes;
     }
 
     @Override

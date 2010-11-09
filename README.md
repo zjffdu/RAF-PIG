@@ -1,118 +1,131 @@
-# RAF-Pig (Rich API for Pig) #
+# RAF-PIG (Rich API for Pig) #
 
 ## To use
 1. git clone
-2. maven package
-3. check out target/dw.pig-version.jar
+2. mvn package
+3. check out target/dw.pig-${version}.jar
+4. check out src/examples for usage of RAF-PIG
 
-## The sugars RAF-Pig provides
+## The sugars RAF-PIG provides
 
 ### Asynchronously execute pig script
 
-The original way to run pig script in embeded mode is create a PigServer, then call PigServer.register() to run pig script(this api is blocking mode). 
-If your script has dump or store statement, you have to wait for a long time. Or you can call PigServer.openIterator() which is also blocking mode.
-Actually pig client has not so much thing to been involved in the execution of pig script. You can do other thing on client when you run Pig script on hadoop cluster. 
-To improve the efficiency, RAF-Pig provides a Asynchronous way to run pig script. The following is an simple example:
+The original way to run pig script in embeded mode is create a PigServer, then call PigServer.register() to run pig script(this api is blocking method). 
+If your script has dump or store statement, you have to wait for a long time until the mapreduce job completes. Or you can call PigServer.openIterator() which is also blocking method.
+Actually pig client has not so much thing to be involved in the execution of pig script. You can do other thing on client when you run Pig script on hadoop cluster. 
+To improve the efficiency, RAF-PIG provides an asynchronous way to run pig script. The following is an simple example:
+
 <code>
- 		PigConfiguration conf = new PigConfiguration();
-        PigSession session = new PigSession(conf);
-        PigJob job = PigJobs.newPigJob(new File("scripts/Test.pig")).setJobName("test-job").setPigJobListener({
-          	@Override
-	        public void beforeStart(PigJob job) throws Exception {
-	            System.out.println("Start");
-	        }
+	a = load '$input' as (f1:chararray,f2:int,f3:int);
+	b = foreach a generate f1,f2;
+	c = group b by f1;
+	d = foreach c generate group,SUM(b.f2);
+	store d into '$output';
+</code>
+<code>
+	PigConfiguration conf = new PigConfiguration();
+	PigSession session = new PigSession(conf);
+	try {
+	    final String input = "src/examples/data/input/example.txt";
+	    final String output = "src/examples/data/output_1";
+	    PigJob job = PigJobs
+	            .newPigJobFromFile(
+	                    new File("src/examples/scripts/example_1.pig"))
+	            .setJobName("example_1").setParameter("input", input)
+	            .setParameter("output", output)
+	            .setListener(new PigJobListenerAdapter() {
+	                @Override
+	                public void beforeStart(PigJob job) throws Exception {
+	                    // delete the destination folder before execution,
+	                    // this should be useful when you do local test
+	                    FileSystem fs = FileSystem.get(new Configuration());
+	                    fs.delete(new Path(output));
+	                }
 	
-	        @Override
-	        public void onSucess(PigJob job) throws Exception {
-	            Iterator<Page> iter = job.getOutput("raw",
-	                    "PigStorage()", "data/output");
-	            while (iter.hasNext()) {
-	                System.out.println(iter.next());
-	            }
-	        }
-        	
-        )};
-        
-		session.submitPigJob(job);  // this method is non-blocking
+	                @Override
+	                public void onSuccess(PigJob job) throws Exception {
+	                    // print success message
+	                    System.out.println("Exeucte pig job sucessfully:\n"
+	                            + job.getScript());
+	                }
+	            });
+	
+	    PigJobFuture future = session.submitPigJob(job);  // this method return immediately
+	    future.await();  // this method block until this PigJob completes
+	} catch (Exception e) {
+	    e.printStackTrace();
+	} finally {
+	    session.close();
+	}
 </code>
 
-Here, we introduce three important classes for RAF-Pig. PigConfiguration encapsulate common property for your PigJobs, and You can consider PigSession as a session between you and Hadoop cluster, 
-and you can submit PigJob through this class. PigJob is the basic interface which wrap a concrete pig script and any payload around PigJob. You can setJobName,setPriority,setParameter and setScriptSource through class PigJob. 
-One thing to be noted here is that the script source is InputStream that means .
+Here, we introduce 4 important classes for RAF-PIG. 
 
+1.	PigConfiguration encapsulate common property for your PigJobs, currently support four types of Options.
+	*	ExecType 	(Local or MapReduce)
+	*	PoolSize (The default value is 1 because currently Pig do not support concurrently execution pig script in one JVM)
+	*	UDFJar (Help you register jars automatically, you do not need to register jar in pig script)
+	*	UDFPackage ( Import UDF package, you do not need to write the full-qualified class name in pig script)
+	
+2.	PigSession is a pig script submitter you can consider it as a session between you and Hadoop cluster, and you can submit PigJob through this class. 
+3.	PigJob is the basic interface which wrap a concrete pig script and any payload around PigJob. You can setJobName,setPriority,setParameter and setScriptSource through interface PigJob. 
+4.	PigJobFuture is a object help you track the progress of this PigJob
 
 ### Add hook before and after pig script execution.
 
-Since we provide a Asynchronous way to run pig script,t then how do you get the result. PigJob has a method setPigJobListener which you allow you hook method before and after the life-cycle of pig script execution.
-interface PigJobListener has three methods beforeStart,onSucess,onFailure. It is very easy to guess the intention of these methods. And we provide two implementation for users. SimplePigJobListener which just print log message in the three stages. and PibJobListernAdapter which provider a adapter class.
+Since we provide an asynchronous way to run pig script, then how do you get the result. PigJob has a method setPigJobListener which you allow you hook method before and after the life-cycle of pig script execution.
+Interface PigJobListener has three methods beforeStart, onSuccess, onFailure. It is very easy to guess the intention of these methods. And we provide an implementation PigJobListernAdapter for easy extension.
 
-<code>
- 		PigConfiguration conf = new PigConfiguration();
-        PigSession session = new PigSession(conf);
-        PigJob job = PigJobs.newPigJob(new File("scripts/Test.pig")).setJobName("test-job").setPigJobListener({
-          	@Override
-	        public void beforeStart(PigJob job) throws Exception {
-	            System.out.println("Start");
-	        }
-	
-	        @Override
-	        public void onSucess(PigJob job) throws Exception {
-	            Iterator<Tuple> iter = job.getOutput("result");
-	            while (iter.hasNext()) {
-	                System.out.println(iter.next());
-	            }
-	        }
-	        
-	         @Override
-		    public void onFailure(final PigJob job, Throwable e) {
-		        LOGGER.error("Run failure for pig script:" + job.getScript());
-		        LOGGER.error(e);
-		    }
-        	
-        )};
-        
-		session.submitPigJob(job);  // this method is non-blocking
-</code>
+
+### Provide different ways to get the output of PigJob
+
+First I'd like to classify pig script as following two types:
+####	1.	Having dump or store statement, this kind of script would generate mapreduce job before the calling of method PigJobListener.onSucess(PigJob job).
+####	2.	Without dump or store statement, this kind of pig script won't generate mapreduce job until you call PigJob.getOutput(alias), most of time you should call PigJob.getOutput(alias) in PigJobListener.onSucess(PigJob job).
+
+Interface PigJob provide two kinds of way to get output. 
+####	1.	Get output from the destination source, such as PigJob.getOutput(Path path, String loadFuncClass), this is often used for pig script with store statement.
+####	2.	Get output from the alias, such as PigJob.getOutput(String alias), this is often used for pig script without store statement.
 
 ### Provide extract pattern for convert pig data structure to your domain data structure.
 
-What we get from pig script's result is tuples which is less semantics for specially application. You may want to convert pig data structure to your domain data structure. RAF-Pig provide three extract interface to handle the extraction
+The output of pig script is always tuples which is less semantics for application. You may want to convert pig data structure to your domain data structure. RAF-PIG provide two interfaces to handle the extraction.
 
-#### <li>  RowMapper		 (map from one tuple to one domain object)
-#### <li>  SingleValueResultExtractor	 
- Use it when your pig script has only one value in output, e.g. total number of visitors of your web site.
-  <pre>
-  a = load 'input_location' as (uuid,....);
-  b = foreach a generate uuid;
-  c = group b all;
-  d = foreach c generate COUNT(b.uuid);
-  store d into 'output_location';
-  </pre>
-#### <li>  MapResultExtractor
-  Use it when you'd like to convert pig result to map type, e.g. 
-  <pre>
-  a = load 'input_location' as (name:chararray,count:int);
-  b = group a by name;
-  c = foreach b generate group,SUM(a.count);
-  store c into 'output_location';
-  </pre>
+#### <li>  RowMapper	(map from one tuple to one domain object)
+
   
 #### <li>  ResultExtractor   
-A general extractor to convert tuples to one domain object if all the three extractor above do not fit for you.
+A general extractor to convert tuples to one domain object. SingleValueResultExtractor is a special implementation of ResultExtractor. Use it when your pig script has only one value in output, e.g. total number of unique visitors of your web site.
+
 
 ### Provide utility class for construct Tuple and DataBag.
-The traditional way to build a Tuple is first create TupleFactory, and create tuple using TupleFactory then add element to this tuple. This way is straightforward but not so consise.
-RFA-Pig provide two utility class for constructing Tuple and DataBag. The class name follows the name converions , just like Arrays and Collections
-the method of these two classes is simple and easy to understand ,such has Tuples.newTuple(E... elements) which let you build Tuple from arbitrary number of elements.
-<li>Tuples
-<li>Bags
+The traditional way to build a Tuple is to first create TupleFactory, and create tuple using TupleFactory then add element to this tuple. This way is straightforward but not so concise.
+RFA-PIG provide two utility class for constructing Tuple and DataBag. The class name follows the factory name convention, just like Arrays and Collections in JDK.
+The method of these two classes is simple and easy to understand ,such has Tuples.newTuple(E... elements) which let you build Tuple from arbitrary number of elements. You can refer javadoc for more details.
 
-### Provider utility class for formating Tuple and DataBag
 
+### Provide utility class for formating Tuple and DataBag
+
+Users sometimes complain that the Pig's
+internal plain text representation of Tuple and DataBag, especially there's nested Tuple and DataBag. It is hard to
+parse it for users outside pig world, especially when handling result using other
+programming languages. 
+e.g. You have a result as following
+<code>
+  (John,(1,2,3))
+  (Lucy,(2,3,4)}
+</code>
+You can use this class ResultFormat to convert it into the following format which you
+can handle it easily.
+<code>
+  John,1,2,3
+  Lucy,2,3,4
+</code>
+You can refer javadoc for more details.
 
 ## Commit Back! ##
 
-Bug fixes, features are welcome especially documentation improvement, because I am not a native english speaker, some documents may not so clear and concise!  Please fork and send me a pull request on github, 
+Bug fixes, features are welcome especially documentation improvement, because I am not a native English speaker, some documents may not so clear and concise!  Please fork and send me a pull request on github, 
 and I will do my best to keep up.  If you make major changes, add yourself to the contributors list below.
 
 ## Contributors ##

@@ -11,16 +11,10 @@ public interface PigJobFuture {
 
     public void await() throws InterruptedException;
 
-    public void await(long milliSeconds) throws InterruptedException;
-
     public boolean isDone();
 
     void setDone();
 
-    public void cancel();
-
-    public boolean isCanceled();
-    
     PigWorker getPigWorker();
     
     public boolean isSuccess();

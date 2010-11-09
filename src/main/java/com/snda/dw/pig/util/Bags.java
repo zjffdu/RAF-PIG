@@ -6,6 +6,7 @@ import java.util.Map;
 import org.apache.pig.data.BagFactory;
 import org.apache.pig.data.DataBag;
 import org.apache.pig.data.Tuple;
+import org.apache.pig.data.TupleFactory;
 
 import com.google.common.base.Preconditions;
 
@@ -13,12 +14,14 @@ import com.google.common.base.Preconditions;
  * Utility class for type {@link DataBag}
  * 
  * @author <a href="http://zjffdu.blogspot.com/">Jeff Zhang</a>
- * @email zjffdu@gmail.com 
+ * @email zjffdu@gmail.com
  * 
  */
 public class Bags {
 
     private static BagFactory BAG_FACTORY = BagFactory.getInstance();
+
+    private static TupleFactory TUPLE_FACTORY = TupleFactory.getInstance();
 
     /**
      * Create {@link DataBag} from arbitrary number of elements, each element is
@@ -39,13 +42,13 @@ public class Bags {
 
         DataBag bag = BAG_FACTORY.newDefaultBag();
         int start = 0;
-        Tuple tuple = Tuples.newTuple(tupleSize);
+        Tuple tuple = TUPLE_FACTORY.newTuple(tupleSize);
         for (int i = 0; i < elements.length; ++i) {
             tuple.set(start++, elements[i]);
             if (start == tupleSize) {
                 start = 0;
                 bag.add(tuple);
-                tuple = Tuples.newTuple(tupleSize);
+                tuple = TUPLE_FACTORY.newTuple(tupleSize);
             }
         }
         return bag;

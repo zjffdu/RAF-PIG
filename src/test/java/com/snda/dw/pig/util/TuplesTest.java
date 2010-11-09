@@ -13,8 +13,9 @@ public class TuplesTest extends TestCase {
 
     public void testTuples() throws IOException {
         Tuple tuple = Tuples.newTuple(10);
-        assertEquals(10, tuple.size());
-
+        assertEquals(1, tuple.size());
+        assertEquals(10, tuple.get(0));
+        
         tuple = Tuples.newTuple(1, "1", 1.0);
         assertEquals(3, tuple.size());
         assertEquals(1, tuple.get(0));
