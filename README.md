@@ -85,24 +85,24 @@ Interface PigJobListener has three methods beforeStart, onSuccess, onFailure. It
 ### Provide different ways to get the output of PigJob ###
 
 First I'd like to classify pig script as following two types 
-	* Having dump or store statement,this kind of script would generate mapreduce job before the calling of 
+	* 	Having dump or store statement,this kind of script would generate mapreduce job before the calling of 
 		method PigJobListener.onSucess(PigJob job).
-	* Without dump or store statement, this kind of pig script won't generate mapreduce job until you call 
+	* 	Without dump or store statement, this kind of pig script won't generate mapreduce job until you call 
 		PigJob.getOutput(alias), most of time you should call PigJob.getOutput(alias) in PigJobListener.onSucess(PigJob job).
 
 Interface PigJob provides two kinds of way to get output. 
-	1.	Get output from the destination source, such as PigJob.getOutput(Path path, String loadFuncClass), 
-	this is often used for pig script with store statement.
-	2.	Get output from the alias, such as PigJob.getOutput(String alias), this is often used for pig script
-	 without store statement.
+	*	Get output from the destination source, such as PigJob.getOutput(Path path, String loadFuncClass), 
+		this is often used for pig script with store statement.
+	*	Get output from the alias, such as PigJob.getOutput(String alias), this is often used for pig script
+	 	without store statement.
 
 
 ### Provide extract pattern for convert pig data structure to your domain data structure ###
 
 The output of pig script is always tuples which is less semantics for application. You may want to convert pig data structure to your domain data structure. RAF-PIG provide two interfaces to handle the extraction.
 
-	1.	RowMapper	(map from one tuple to one domain object)
-	2. 	ResultExtractor   (A general extractor to convert tuples to one domain object. SingleValueResultExtractor is 
+	*	RowMapper	(map from one tuple to one domain object)
+	* 	ResultExtractor   (A general extractor to convert tuples to one domain object. SingleValueResultExtractor is 
 	a special implementation of ResultExtractor. Use it when your pig script has only one value in output, e.g. total number of 
 	unique visitors of your web site)
 
