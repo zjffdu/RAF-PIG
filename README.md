@@ -1,14 +1,14 @@
 # RAF-PIG (Rich API for Pig) #
 
-## To use
+## To use ##
 1. git clone
 2. mvn package
 3. check out target/dw.pig-${version}.jar
 4. check out src/examples for usage of RAF-PIG
+ 
+## The sugars RAF-PIG provides ##
 
-## The sugars RAF-PIG provides
-
-### Asynchronously execute pig script
+### Asynchronously execute pig script ###
 
 The original way to run pig script in embeded mode is create a PigServer, then call PigServer.register() to run pig script(this api is blocking method). 
 If your script has dump or store statement, you have to wait for a long time until the mapreduce job completes. Or you can call PigServer.openIterator() which is also blocking method.
@@ -71,13 +71,13 @@ Here, we introduce 4 important classes for RAF-PIG.
 3.	PigJob is the basic interface which wrap a concrete pig script and any payload around PigJob. You can setJobName,setPriority,setParameter and setScriptSource through interface PigJob. 
 4.	PigJobFuture is a object help you track the progress of this PigJob
 
-### Add hook before and after pig script execution.
+### Add hook before and after pig script execution ###
 
 Since we provide an asynchronous way to run pig script, then how do you get the result. PigJob has a method setPigJobListener which you allow you hook method before and after the life-cycle of pig script execution.
 Interface PigJobListener has three methods beforeStart, onSuccess, onFailure. It is very easy to guess the intention of these methods. And we provide an implementation PigJobListernAdapter for easy extension.
 
 
-### Provide different ways to get the output of PigJob
+### Provide different ways to get the output of PigJob ###
 
 First I'd like to classify pig script as following two types:
 	1.	Having dump or store statement, this kind of script would generate mapreduce job before the calling of method PigJobListener.onSucess(PigJob job).
@@ -87,7 +87,7 @@ Interface PigJob provides two kinds of way to get output.
 	1.	Get output from the destination source, such as PigJob.getOutput(Path path, String loadFuncClass), this is often used for pig script with store statement.
 	2.	Get output from the alias, such as PigJob.getOutput(String alias), this is often used for pig script without store statement.
 
-### Provide extract pattern for convert pig data structure to your domain data structure.
+### Provide extract pattern for convert pig data structure to your domain data structure ###
 
 The output of pig script is always tuples which is less semantics for application. You may want to convert pig data structure to your domain data structure. RAF-PIG provide two interfaces to handle the extraction.
 
@@ -95,13 +95,13 @@ The output of pig script is always tuples which is less semantics for applicatio
 <li>ResultExtractor   (A general extractor to convert tuples to one domain object. SingleValueResultExtractor is a special implementation of ResultExtractor. Use it when your pig script has only one value in output, e.g. total number of unique visitors of your web site)
 
 
-### Provide utility class for construct Tuple and DataBag.
+### Provide utility class for construct Tuple and DataBag ###
 The traditional way to build a Tuple is to first create TupleFactory, and create tuple using TupleFactory then add element to this tuple. This way is straightforward but not so concise.
 RFA-PIG provide two utility class for constructing Tuple and DataBag. The class name follows the factory name convention, just like Arrays and Collections in JDK.
 The method of these two classes is simple and easy to understand ,such has Tuples.newTuple(E... elements) which let you build Tuple from arbitrary number of elements. You can refer javadoc for more details.
 
 
-### Provide utility class for formating Tuple and DataBag
+### Provide utility class for formating Tuple and DataBag ###
 
 Users sometimes complain that the Pig's
 internal plain text representation of Tuple and DataBag, especially there's nested Tuple and DataBag. It is hard to
