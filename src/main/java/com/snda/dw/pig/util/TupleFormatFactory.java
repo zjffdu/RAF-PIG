@@ -8,7 +8,6 @@ import org.apache.pig.data.Tuple;
  * Factory class for {@link TupleFormat}
  * 
  * @author <a href="http://zjffdu.blogspot.com/">Jeff Zhang</a>
- * @email zjffdu@gmail.com 
  * 
  */
 public class TupleFormatFactory {

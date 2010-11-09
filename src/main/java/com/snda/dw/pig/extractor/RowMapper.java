@@ -10,7 +10,6 @@ import org.apache.pig.data.Tuple;
  * Use it when one tuple correspond to your one domain object
  * 
  * @author <a href="http://zjffdu.blogspot.com/">Jeff Zhang</a>
- * @email zjffdu@gmail.com 
  *
  * @param <E>
  */

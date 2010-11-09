@@ -11,7 +11,6 @@ import org.apache.pig.data.Tuple;
  * You can extract the result to any type.
  * 
  * @author <a href="http://zjffdu.blogspot.com/">Jeff Zhang</a>
- * @email zjffdu@gmail.com 
  *
  * @param <E>
  */

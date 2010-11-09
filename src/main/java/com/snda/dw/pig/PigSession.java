@@ -16,10 +16,9 @@ import com.snda.dw.pig.listener.PigJobListenerAdapter;
 
 /**
  * This class represents one session to PigServer, this is the only way to
- * interact with Pig such as you submit @link {@link PigJob} using this class.
+ * interact with Pig such as submitting @link {@link PigJob} using this class.
  * 
  * @author <a href="http://zjffdu.blogspot.com/">Jeff Zhang</a>
- * @email zjffdu@gmail.com 
  * 
  */
 public class PigSession {
@@ -42,10 +41,16 @@ public class PigSession {
         });
     }
 
-    public PigServer2Factory getPigServerPool() {
+    PigServer2Factory getPigServerPool() {
         return this.pigServerPool;
     }
 
+    /**
+     * This method return immediately, you can use the returned object {@link PigJobFuture} to track the progress of {@link PigJob}
+     * 
+     * @param job
+     * @return
+     */
     public PigJobFuture submitPigJob(PigJob job) {
         PigWorker worker = new PigWorker(this, job);
         PigJobFuture future = new DefaultPigJobFuture(worker);
@@ -53,6 +58,9 @@ public class PigSession {
         return future;
     }
 
+    /**
+     * Wait until all the submitted {@link PigJob} completed, remember to call this method at the end your program. The best practice is to put in the finally block.
+     */
     public void close() {
         this.executor.shutdown();
     }

@@ -17,7 +17,6 @@ import org.apache.pig.data.Tuple;
  * store d into 'output_location';
  * </pre>
  * @author <a href="http://zjffdu.blogspot.com/">Jeff Zhang</a>
- * @email zjffdu@gmail.com 
  *
  * @param <E>
  */

@@ -7,20 +7,39 @@ import java.util.Map;
  * Configuration class for one {@link PigSession}.
  * 
  * @author <a href="http://zjffdu.blogspot.com/">Jeff Zhang</a>
- * @email zjffdu@gmail.com 
  * 
  */
 public class PigConfiguration {
 
-    /**
-     * 
-     * @author Jeff Zhang
-     * @email zjffdu@gmail.com
-     * @blog http://zjffdu.blogspot.com
-     * 
-     */
+
     public static enum Options {
-        ExecType, PoolSize, UDFJar, UDFPackage,
+        /**
+         * Local or MapReduce, default value is Local
+         */
+        ExecType, 
+        /**
+         * The size of ThreadPool, default value is 1, because currently pig do not concurrent execute multpile pig script in one jvm
+         */
+        PoolSize, 
+        /**
+         * Udf jars you want to register to {@link PigServer}, if you have multiple jars,
+         * separate them using colon. e.g.
+         * <pre>
+         * PigConfiguration conf=new PigConfiguration();
+         * conf.set(Options.UDFJar,"lib/a.jar:lib/b.jar");
+         * </pre>
+         */
+        UDFJar, 
+        
+        /**
+         * UDF packages you want to import to {@link PigServer}, if you have multiple packages,
+         * separate them using colon. e.g.
+         * <pre>
+         * PigConfiguration conf=new PigConfiguration();
+         * conf.set(Options.UDFPackage,"com.tutorial.udf_1:com.tutorial.udf_2");
+         * </pre>
+         */
+        UDFPackage,
     }
 
     private Map<Options, String> map = new HashMap<Options, String>();

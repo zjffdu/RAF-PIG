@@ -10,7 +10,6 @@ import com.snda.dw.pig.listener.PigJobListener;
  * execution life cycle of {@link PigJob}
  * 
  * @author <a href="http://zjffdu.blogspot.com/">Jeff Zhang</a>
- * @email zjffdu@gmail.com
  * 
  */
 public class PigWorker extends Thread {

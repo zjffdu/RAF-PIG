@@ -36,7 +36,6 @@ import com.google.common.base.Throwables;
  * official release.
  * 
  * @author <a href="http://zjffdu.blogspot.com/">Jeff Zhang</a>
- * @email zjffdu@gmail.com 
  * 
  */
 public class PigServer2 extends PigServer {

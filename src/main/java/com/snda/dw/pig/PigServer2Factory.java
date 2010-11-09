@@ -9,7 +9,6 @@ import com.snda.dw.pig.PigConfiguration.Options;
  * Factory class for {@link PigServer2}
  * 
  * @author <a href="http://zjffdu.blogspot.com/">Jeff Zhang</a>
- * @email zjffdu@gmail.com 
  *
  */
 public class PigServer2Factory {

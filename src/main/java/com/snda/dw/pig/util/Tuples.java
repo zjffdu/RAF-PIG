@@ -12,7 +12,6 @@ import com.google.common.base.Preconditions;
  * Utility class for type {@link Tuple}
  * 
  * @author <a href="http://zjffdu.blogspot.com/">Jeff Zhang</a>
- * @email zjffdu@gmail.com
  * 
  */
 public class Tuples {

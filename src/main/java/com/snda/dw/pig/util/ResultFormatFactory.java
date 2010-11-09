@@ -10,7 +10,6 @@ import org.apache.pig.data.Tuple;
  * Factory class for {@link ResultFormat}
  * 
  * @author <a href="http://zjffdu.blogspot.com/">Jeff Zhang</a>
- * @email zjffdu@gmail.com 
  *
  */
 public class ResultFormatFactory {

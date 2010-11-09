@@ -18,7 +18,6 @@ import com.snda.dw.pig.listener.PigJobListener;
  * using this interface.
  * 
  * @author <a href="http://zjffdu.blogspot.com/">Jeff Zhang</a>
- * @email zjffdu@gmail.com 
  * 
  */
 public interface PigJob {
@@ -90,6 +89,7 @@ public interface PigJob {
     void setPigServer(PigServer2 pigServer);
 
     /**
+     * Get the output of alias and extract the result using {@link RowMapper} on it, used for without-store pig script
      * 
      * @param <E>
      * @param alias
@@ -100,6 +100,7 @@ public interface PigJob {
     <E> List<E> getOutput(String alias, RowMapper<E> mapper) throws IOException;
 
     /**
+     * Get the output of alias and apply {@link ResultExtractor} on it, used for without-store pig script
      * 
      * @param <E>
      * @param alias
@@ -111,6 +112,7 @@ public interface PigJob {
             throws IOException;
 
     /**
+     * Get the output of alias, used for without-store pig script
      * 
      * @param alias
      * @return
@@ -119,37 +121,40 @@ public interface PigJob {
     Iterator<Tuple> getOutput(String alias) throws IOException;
 
     /**
+     * Get the output from the specified path and using the specified LoadFunc, and apply {@link RowMapper} on it, used for with-store pig script.
      * 
      * @param <E>
      * @param path
-     * @param loadFuncClass
+     * @param loadFuncConstructor
      * @param mapper
      * @return
      * @throws IOException
      */
-    <E> List<E> getOutput(Path path, String loadFuncClass, RowMapper<E> mapper)
+    <E> List<E> getOutput(Path path, String loadFuncConstructor, RowMapper<E> mapper)
             throws IOException;
 
     /**
+     * Get the output from the specified path and using the specified LoadFunc, and apply {@link ResultExtractor} on it, used for with-store pig script.
      * 
      * @param <E>
      * @param path
-     * @param loadFuncClass
+     * @param loadFuncConstructor
      * @param extractor
      * @return
      * @throws IOException
      */
-    <E> E getOutput(Path path, String loadFuncClass,
+    <E> E getOutput(Path path, String loadFuncConstructor,
             ResultExtractor<E> extractor) throws IOException;
 
     /**
+     * Get the output from the specified path and using the specified LoadFunc, used for with-store pig script.
      * 
      * @param path
-     * @param loadFuncClass
+     * @param loadFuncConstructor
      * @return
      * @throws IOException
      */
-    Iterator<Tuple> getOutput(Path path, String loadFuncClass)
+    Iterator<Tuple> getOutput(Path path, String loadFuncConstructor)
             throws IOException;
 
 }

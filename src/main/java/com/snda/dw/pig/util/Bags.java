@@ -14,7 +14,6 @@ import com.google.common.base.Preconditions;
  * Utility class for type {@link DataBag}
  * 
  * @author <a href="http://zjffdu.blogspot.com/">Jeff Zhang</a>
- * @email zjffdu@gmail.com
  * 
  */
 public class Bags {
@@ -29,7 +28,7 @@ public class Bags {
      * 
      * @param <E>
      * @param tupleSize
-     * @param elements
+     * @param elements  
      * @return
      * @throws IOException
      */

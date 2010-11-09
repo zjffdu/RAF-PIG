@@ -12,7 +12,6 @@ import com.snda.dw.pig.PigJob;
  * Adapter class for user's easy user of interface {@link PigJobListener}.
  * 
  * @author <a href="http://zjffdu.blogspot.com/">Jeff Zhang</a>
- * @email zjffdu@gmail.com 
  * 
  */
 public class PigJobListenerAdapter implements PigJobListener {

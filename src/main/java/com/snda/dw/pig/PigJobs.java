@@ -14,12 +14,12 @@ import com.snda.dw.pig.impl.DefaultPigJob;
  * using this class.
  * 
  * @author <a href="http://zjffdu.blogspot.com/">Jeff Zhang</a>
- * @email zjffdu@gmail.com 
  * 
  */
 public class PigJobs {
 
     /**
+     * Create PigJob from a in-memory pig script
      * 
      * @param script
      * @return
@@ -31,7 +31,8 @@ public class PigJobs {
     }
 
     /**
-     * 
+     * Create PigJob from a pig script file
+     *  
      * @param scriptFile
      * @return
      * @throws FileNotFoundException
@@ -43,6 +44,7 @@ public class PigJobs {
     }
 
     /**
+     * Create PigJob from {@link InputStream}, such as {@link SocketInputStream} which means the pig script is on a remote machine
      * 
      * @param in
      * @return
@@ -53,6 +55,7 @@ public class PigJobs {
     }
 
     /**
+     * Create PigJob from a resource file on classpath
      * 
      * @param resource
      * @return
