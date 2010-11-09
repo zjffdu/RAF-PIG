@@ -79,13 +79,13 @@ Interface PigJobListener has three methods beforeStart, onSuccess, onFailure. It
 
 ### Provide different ways to get the output of PigJob ###
 
-First I'd like to classify pig script as following two types:
-	1.	Having dump or store statement, this kind of script would generate mapreduce job before the calling of method PigJobListener.onSucess(PigJob job).
-	2.	Without dump or store statement, this kind of pig script won't generate mapreduce job until you call PigJob.getOutput(alias), most of time you should call PigJob.getOutput(alias) in PigJobListener.onSucess(PigJob job).
+First I'd like to classify pig script as following two types
+-	Having dump or store statement, this kind of script would generate mapreduce job before the calling of method PigJobListener.onSucess(PigJob job).
+-	Without dump or store statement, this kind of pig script won't generate mapreduce job until you call PigJob.getOutput(alias), most of time you should call PigJob.getOutput(alias) in PigJobListener.onSucess(PigJob job).
 
 Interface PigJob provides two kinds of way to get output. 
-	1.	Get output from the destination source, such as PigJob.getOutput(Path path, String loadFuncClass), this is often used for pig script with store statement.
-	2.	Get output from the alias, such as PigJob.getOutput(String alias), this is often used for pig script without store statement.
+-	Get output from the destination source, such as PigJob.getOutput(Path path, String loadFuncClass), this is often used for pig script with store statement.
+-	Get output from the alias, such as PigJob.getOutput(String alias), this is often used for pig script without store statement.
 
 ### Provide extract pattern for convert pig data structure to your domain data structure ###
 
