@@ -3,7 +3,7 @@
 ## To use ##
 1. git clone
 2. mvn package
-3. check out target/dw.pig-${version}.jar
+3. check out target/pig.rfa-${version}.jar
 4. check out src/examples for usage of RAF-PIG
 
 ## License ##
